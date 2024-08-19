@@ -413,4 +413,116 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
         // If they are equal, return 0
         return 0;
     }
+
+    /**
+     * Negate this precise number
+     * @return The negated number
+     */
+    public PreciseNumber negate() {
+        return new PreciseNumber(digits, exponent, !sign);
+    }
+
+    /**
+     * Return the addition result of this {@code PreciseNumber} and another one
+     * @param o The other {@code PreciseNumber}
+     * @return The result of the addition
+     */
+    public PreciseNumber add(PreciseNumber o) {
+
+        // If the signs are different, subtract the smaller from the larger
+        if (this.getSign() != o.getSign())
+            return this.getSign() ? this.subtract(o.negate()) : o.subtract(this.negate());
+
+        // Get the numbers with trailing zeroes
+        List<Integer> thisDigits = this.getDigitsTrailing();
+        List<Integer> oDigits = o.getDigitsTrailing();
+
+        // Declare the new digits list
+        List<Integer> newDigits;
+
+        // Add the smaller number to the larger one
+        if (thisDigits.size() >= oDigits.size()) {
+
+            // Assign the new digits list
+            newDigits = new ArrayList<>(thisDigits);
+
+            // Add the digits
+            for (int e = 0; e < oDigits.size(); e++)
+                newDigits.set(e, newDigits.get(e) + oDigits.get(e));
+        } else {
+
+            // Assign the new digits list
+            newDigits = new ArrayList<>(oDigits);
+
+            // Add the digits
+            for (int e = 0; e < thisDigits.size(); e++)
+                newDigits.set(e, newDigits.get(e) + thisDigits.get(e));
+        }
+
+        // Carry values larger than 10
+        for (int e = 0; e < newDigits.size(); e++) {
+            if (newDigits.get(e) >= 10) {
+                newDigits.set(e, newDigits.get(e) % 10);
+                if (e == newDigits.size() - 1)
+                    newDigits.add(1);
+                else
+                    newDigits.set(e + 1, newDigits.get(e + 1) + 1);
+            }
+        }
+
+        // Return the new precise number (constructor handles exponent)
+        return new PreciseNumber(newDigits, sign);
+    }
+
+    public PreciseNumber subtract(PreciseNumber o) {
+
+        // If other is negative, negate other and add instead
+        if (!o.getSign())
+            return this.add(o.negate());
+
+        // If this is negative, negate the result of other add this
+        if (!this.getSign())
+            return o.add(this.negate()).negate();
+
+        // If other is greater than this, negate the result of this subtract other
+        if (this.compareTo(o) < 0)
+            return o.subtract(this).negate();
+
+        // Get the numbers with trailing zeroes
+        List<Integer> thisDigits = this.getDigitsTrailing();
+        List<Integer> oDigits = o.getDigitsTrailing();
+
+        // Declare the new digits list
+        List<Integer> newDigits;
+
+        // Subtract the smaller number from the larger one
+        if (thisDigits.size() >= oDigits.size()) {
+
+            // Assign the new digits list
+            newDigits = new ArrayList<>(thisDigits);
+
+            // Add the digits
+            for (int e = 0; e < oDigits.size(); e++)
+                newDigits.set(e, newDigits.get(e) - oDigits.get(e));
+        } else {
+
+            // Assign the new digits list
+            newDigits = new ArrayList<>(oDigits);
+
+            // Add the digits
+            for (int e = 0; e < thisDigits.size(); e++)
+                newDigits.set(e, newDigits.get(e) - thisDigits.get(e));
+        }
+
+        // Borrow for values smaller than 0
+        for (int e = 0; e < newDigits.size(); e++) {
+            if (newDigits.get(e) < 0) {
+                newDigits.set(e, newDigits.get(e) + 10);
+                newDigits.set(e + 1, newDigits.get(e + 1) - 1);
+            }
+        }
+
+        // Return the new precise number (constructor handles exponent)
+        return new PreciseNumber(newDigits, true);
+    }
 }
