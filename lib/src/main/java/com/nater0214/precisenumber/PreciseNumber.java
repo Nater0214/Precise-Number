@@ -16,7 +16,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      ******************/
 
     /**
-     * The digits of the number
+     * The digits of the number such that the first number is the lowest power of 10
      */
     private final List<Integer> digits;
 
