@@ -285,20 +285,6 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
     }
 
     /**
-     * @return The length of the number
-     */
-    protected int getLength() {
-        return digits.size();
-    }
-
-    /**
-     * @return The exponent of the highest digit
-     */
-    protected int getHighestExponent() {
-        return getLength() + getExponent() - 1;
-    }
-
-    /**
      * @return The sign of the number
      */
     protected boolean getSign() {
