@@ -233,32 +233,10 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      */
     @Override
     public long longValue() {
-
-        // Initialize value
-        long value = 0;
-
-        // If the number is greater than the long limit then return it
         if (this.compareTo(new PreciseNumber(Long.MAX_VALUE)) > 0)
             return Long.MAX_VALUE;
-
-        // If the number if less than the long limit then return it
-        if (this.compareTo(new PreciseNumber(Long.MIN_VALUE + 1)) < 0)
-            return Long.MIN_VALUE;
-
-        // Add digits to the value
-        for (int e = 0; e < this.getDigits().size(); e++) {
-            value *= 10;
-            value += this.getDigits().get(e);
-        }
-
-        // Multiply the value by the power of the exponent
-        value *= Math.pow(10, exponent);
-
-        // If the number is negative, make it negative
-        value *= sign ? 1 : -1;
-
-        // Return the value
-        return value;
+        else
+            return Long.parseLong(this.toString());
     }
 
     /**
@@ -267,7 +245,10 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      */
     @Override
     public int intValue() {
-        return (int) longValue();
+        if (this.compareTo(new PreciseNumber(Integer.MAX_VALUE)) > 0)
+            return Integer.MAX_VALUE;
+        else
+            return Integer.parseInt(this.toString());
     }
 
     /**
@@ -276,32 +257,10 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      */
     @Override
     public double doubleValue() {
-
-        // Initialize value
-        double value = 0;
-
-        // If the number is greater than the double limit then return it
         if (this.compareTo(new PreciseNumber(Double.MAX_VALUE)) > 0)
             return Double.MAX_VALUE;
-
-        // If the number if less than the double limit then return it
-        if (this.compareTo(new PreciseNumber(-Double.MAX_VALUE)) < 0)
-            return Double.MIN_VALUE;
-
-        // Add digits to the value
-        for (int e = 0; e < this.getDigits().size(); e++) {
-            value *= 10;
-            value += this.getDigits().get(e);
-        }
-
-        // Multiply the value by the power of the exponent
-        value *= Math.pow(10, exponent);
-
-        // If the number is negative, make it negative
-        value *= sign ? 1 : -1;
-
-        // Return the value
-        return value;
+        else
+            return Double.parseDouble(this.toString());
     }
 
     /**
@@ -310,7 +269,37 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      */
     @Override
     public float floatValue() {
-        return (float) doubleValue();
+        if (this.compareTo(new PreciseNumber(Float.MAX_VALUE)) > 0)
+            return Float.MAX_VALUE;
+        else
+            return Float.parseFloat(this.toString());
+    }
+
+    @Override
+    public String toString() {
+
+        // Create the string builder
+        StringBuilder builder = new StringBuilder();
+
+        // Add the sign
+        builder.append(sign ? "" : "-");
+
+        // Add the digits
+        for (int e = 0; e < this.getDigits().size(); e++) {
+            builder.append(this.getDigits().get(e));
+        }
+
+        // Add the exponent zeros
+        for (int e = 0; e < this.getExponent(); e++) {
+            builder.append("0");
+        }
+
+        // Add 0 if empty
+        if (builder.length() == 0)
+            builder.append("0");
+
+        // Return the string
+        return builder.toString();
     }
 
     /**************
