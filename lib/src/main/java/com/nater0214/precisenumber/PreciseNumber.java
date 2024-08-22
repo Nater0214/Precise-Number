@@ -1,8 +1,8 @@
 package com.nater0214.precisenumber;
 
-import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a perfectly precise number class
@@ -59,83 +59,21 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
     /****************
      * Constructors *
      ****************/
-
+    
     /**
-     * Create a new precise number from a {@code long} value
-     * @param value The {@code long} value to create from; has to be greater than {@code Long.MIN_VALUE + 1}
-     * @throws IllegalArgumentException If the number is too small
+     * Create a new precise number from an {@code int} value
+     * @param value The {@code int} value to create from
      */
-    public PreciseNumber(long value) {
-
-        // Check if number is too small
-        if (value < Long.MIN_VALUE + 1)
-            throw new IllegalArgumentException("Number is too small");
-
-        // Get the sign
-        boolean sign = value >= 0;
-
-        // Create digits list
-        List<Integer> digits = new ArrayList<>();
-
-        // Initialize the exponent
-        int exponent = 0;
-
-        // If number is negative, make it positive
-        value = sign ? value : -value;
-
-        // Loop adding digits
-        for (int e = (int) Math.log10(value); e >= 0; e--) {
-            int digit = (int) (value / (int) Math.pow(10, e));
-            digits.add(digit);
-            value -= digit * Math.pow(10, e);
-        }
-
-        // Remove trailing zeros and set exponent
-        SimpleImmutableEntry<List<Integer>, Integer> result = removeTrailing(digits);
-        digits = result.getKey();
-        exponent = result.getValue();
-
-        // Set all object values
-        this.digits = digits;
-        this.exponent = exponent;
-        this.sign = sign;
+    public PreciseNumber(int value) {
+        this(String.valueOf(value));
     }
 
     /**
-     * Create a new precise number from a {@code double} value
-     * @param value The {@code double} value to create from
-     * @param roundDigit The number of decimal places to round the number to
+     * Create a new precise number from a {@code long} value
+     * @param value The {@code long} value to create from
      */
-    public PreciseNumber(double value, int roundDigit) {
-
-        // Get the sign
-        boolean sign = value >= 0;
-
-        // Create digits list
-        List<Integer> digits = new ArrayList<>();
-
-        // Initialize the exponent as the negative of roundDigit
-        int exponent = roundDigit * -1;
-
-        // If the number is negative, make it positive
-        value = sign ? value : -value;
-
-        // Loop adding digits
-        for (int e = (int) Math.log10(value); e >= roundDigit * -1; e--) {
-            int digit = (int) (value / (int) Math.pow(10, e));
-            digits.add(digit);
-            value -= digit * Math.pow(10, e);
-        }
-
-        // Remove trailing zeros and set exponent
-        SimpleImmutableEntry<List<Integer>, Integer> result = removeTrailing(digits);
-        digits = result.getKey();
-        exponent = result.getValue();
-
-        // Set all object values
-        this.digits = digits;
-        this.exponent = exponent;
-        this.sign = sign;
+    public PreciseNumber(long value) {
+        this(String.valueOf(value));
     }
 
     /**
@@ -144,16 +82,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      * @see #PreciseNumber(double, int)
      */
     public PreciseNumber(double value) {
-        this(value, 15);
-    }
-
-    /**
-     * Create a new precise number from a {@code float} value
-     * @param value The {@code float} value to create from
-     * @param roundDigit
-     */
-    public PreciseNumber(float value, int roundDigit) {
-        this((double) value, roundDigit);
+        this(String.valueOf(value));
     }
 
     /**
@@ -162,15 +91,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      * @see #PreciseNumber(float, int)
      */
     public PreciseNumber(float value) {
-        this(value, 7);
-    }
-
-    /**
-     * Create a new precise number from an {@code int} value
-     * @param value The {@code int} value to create from
-     */
-    public PreciseNumber(int value) {
-        this((long) value);
+        this(String.valueOf(value));
     }
 
     /**
@@ -189,19 +110,26 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
         // If the number is negative, make it positive
         value = sign ? value : value.substring(1);
 
-        // Initialize the exponent based on the position of the decimal point
-        int exponent;
-        int indexOfPoint = value.indexOf('.');
-        if (indexOfPoint == -1) {
-            exponent = 0;
-        } else {
-            exponent = value.length() - indexOfPoint - 1;
-            value = value.replace(".", "");
+        // Get the exponent of the number
+        int exponent = 0;
+        if (value.contains("E")) {
+            String[] split = value.split("E");
+            value = split[0];
+            exponent = Integer.parseInt(split[1]);
+        } else if (value.contains("e")) {
+            String[] split = value.split("e");
+            value = split[0];
+            exponent = Integer.parseInt(split[1]);
+        }
+        if (value.contains(".")) {
+            String[] split = value.split("\\.");
+            value = split[0] + split[1];
+            exponent -= split[1].length();
         }
 
         // Loop adding digits
         try {
-            for (int e = value.length() - 1; e >= 0; e--) {
+            for (int e = 0; e < value.length(); e++) {
                 int digit = Integer.parseInt(value.substring(e, e + 1));
                 digits.add(digit);
             }
@@ -210,8 +138,12 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
         }
 
         // Remove leading zeros
-        while (digits.get(0) == 0)
+        while (digits.get(0) == 0) {
             digits.remove(0);
+            if (digits.size() == 0) {
+                break;
+            }
+        }
 
         // Set all object values
         this.digits = digits;
@@ -314,9 +246,9 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
             return Long.MIN_VALUE;
 
         // Add digits to the value
-        for (Integer digit : digits) {
+        for (int e = 0; e < this.getDigits().size(); e++) {
             value *= 10;
-            value += digit;
+            value += this.getDigits().get(e);
         }
 
         // Multiply the value by the power of the exponent
@@ -357,9 +289,9 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
             return Double.MIN_VALUE;
 
         // Add digits to the value
-        for (Integer digit : digits) {
+        for (int e = 0; e < this.getDigits().size(); e++) {
             value *= 10;
-            value += digit;
+            value += this.getDigits().get(e);
         }
 
         // Multiply the value by the power of the exponent
