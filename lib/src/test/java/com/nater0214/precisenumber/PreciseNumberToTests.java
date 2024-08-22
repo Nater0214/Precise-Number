@@ -43,7 +43,7 @@ public class PreciseNumberToTests {
     @Test
     void toDoubleMax() {
         PreciseNumber number = new PreciseNumber(Double.MAX_VALUE);
-        assert number.intValue() == Double.MAX_VALUE;
+        assert number.doubleValue() == Double.MAX_VALUE;
     }
 
     @Test
