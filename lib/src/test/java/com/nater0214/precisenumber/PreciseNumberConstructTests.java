@@ -51,9 +51,7 @@ public class PreciseNumberConstructTests {
     @SuppressWarnings("unused")
     @Test
     void longConstructMin() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            PreciseNumber number = new PreciseNumber(Long.MIN_VALUE);
-        });
+        PreciseNumber number = new PreciseNumber(Long.MIN_VALUE);
     }
 
     @SuppressWarnings("unused")

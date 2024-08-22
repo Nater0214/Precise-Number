@@ -29,9 +29,21 @@ public class PreciseNumberToTests {
     }
 
     @Test
+    void toLongMax() {
+        PreciseNumber number = new PreciseNumber(Long.MAX_VALUE);
+        assert number.longValue() == Long.MAX_VALUE;
+    }
+
+    @Test
     void toLongZero() {
         PreciseNumber number = new PreciseNumber(0);
         assert number.longValue() == 0L;
+    }
+
+    @Test
+    void toDoubleMax() {
+        PreciseNumber number = new PreciseNumber(Double.MAX_VALUE);
+        assert number.doubleValue() == Double.MAX_VALUE;
     }
 
     @Test
