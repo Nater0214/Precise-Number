@@ -202,7 +202,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      */
     protected List<Integer> getDigitsTrailing() {
         List<Integer> out = new ArrayList<>();
-        for (int e = exponent; e >= 0; e--) {
+        for (int e = exponent; e > 0; e--) {
             out.add(0);
         }
         out.addAll(digits);
@@ -333,6 +333,11 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
 
         // If they are equal, return 0
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PreciseNumber && this.compareTo((PreciseNumber) obj) == 0;
     }
 
     /**
