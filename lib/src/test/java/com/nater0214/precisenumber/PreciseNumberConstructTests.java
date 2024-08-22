@@ -1,7 +1,5 @@
 package com.nater0214.precisenumber;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
 
 public class PreciseNumberConstructTests {
