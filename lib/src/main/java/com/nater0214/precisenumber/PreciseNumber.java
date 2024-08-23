@@ -54,6 +54,54 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
         return new SimpleImmutableEntry<>(newDigits, exponent);
     }
 
+    /**
+     * Carry the digits passed in so that all digits are in the range [0, 9]
+     * @param digits The digits to perform the operation on
+     * @return The carried digits
+     * @apiNote This method does not change the exponent or sign
+     */
+    private static List<Integer> carryDigits(List<Integer> digits) {
+
+        // Create digit lists
+        List<Integer> newDigits = new ArrayList<>(digits);
+        List<Integer> prevDigits = new ArrayList<>();
+
+        // Loop carrying
+        while (!newDigits.equals(prevDigits)) {
+            prevDigits = new ArrayList<>(newDigits);
+            for (int e = newDigits.size() - 1; e >= 0; e--) {
+                if (newDigits.get(e) >= 10) {
+                    if (e == 0) {
+                        int digit = newDigits.get(0);
+                        newDigits.set(0, digit % 10);
+                        newDigits.add(0, digit / 10);
+                    } else {
+                        int digit = newDigits.get(e);
+                        newDigits.set(e, digit % 10);
+                        newDigits.set(e - 1, newDigits.get(e - 1) + digit / 10);
+                    }
+                } else if (newDigits.get(e) < 0) {
+                    if (e == 0) {
+                        int digit = newDigits.get(0);
+                        newDigits.set(0, 10 + digit % 10);
+                        newDigits.add(0, -(digit / -10));
+                    } else {
+                        int digit = newDigits.get(e);
+                        newDigits.set(e, 10 + digit % 10);
+                        newDigits.set(e - 1, newDigits.get(e - 1) - (digit / -10 + 1));
+                    }
+                }
+            }
+        }
+
+        // Remove leading zeros
+        while (newDigits.size() > 1 && newDigits.get(0) == 0)
+            newDigits.remove(0);
+
+        // Return new digits
+        return newDigits;
+    }
+
     /****************
      * Constructors *
      ****************/
@@ -392,16 +440,8 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
                 newDigits.set(newDigits.size() - 1 - e, newDigits.get(newDigits.size() - 1 - e) + thisDigits.get(thisDigits.size() - 1 - e));
         }
 
-        // Carry values larger than 10
-        for (int e = 0; e < newDigits.size(); e++) {
-            if (newDigits.get(e) >= 10) {
-                newDigits.set(e, newDigits.get(e) % 10);
-                if (e == newDigits.size() - 1)
-                    newDigits.add(1);
-                else
-                    newDigits.set(e + 1, newDigits.get(e + 1) + 1);
-            }
-        }
+        // Carry digits
+        newDigits = carryDigits(newDigits);
 
         // Return the new precise number (constructor handles exponent)
         return new PreciseNumber(newDigits, sign);
@@ -447,13 +487,8 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
                 newDigits.set(newDigits.size() - 1 - e, newDigits.get(newDigits.size() - 1 - e) - thisDigits.get(thisDigits.size() - 1 - e));
         }
 
-        // Borrow for values smaller than 0
-        for (int e = 0; e < newDigits.size(); e++) {
-            if (newDigits.get(e) < 0) {
-                newDigits.set(e, newDigits.get(e) + 10);
-                newDigits.set(e + 1, newDigits.get(e + 1) - 1);
-            }
-        }
+        // Carry digits
+        newDigits = carryDigits(newDigits);
 
         // Return the new precise number (constructor handles exponent)
         return new PreciseNumber(newDigits, true);
