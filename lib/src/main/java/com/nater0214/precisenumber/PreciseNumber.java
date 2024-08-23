@@ -143,6 +143,11 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
             }
         }
 
+        // Remove trailing zeroes and modify exponent
+        SimpleImmutableEntry<List<Integer>, Integer> result = removeTrailing(digits);
+        digits = result.getKey();
+        exponent += result.getValue();
+
         // Set all object values
         this.digits = digits;
         this.exponent = exponent;
