@@ -381,7 +381,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
 
             // Add the digits
             for (int e = 0; e < oDigits.size(); e++)
-                newDigits.set(e, newDigits.get(e) + oDigits.get(e));
+                newDigits.set(newDigits.size() - 1 - e, newDigits.get(newDigits.size() - 1 - e) + oDigits.get(oDigits.size() - 1 - e));
         } else {
 
             // Assign the new digits list
@@ -389,7 +389,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
 
             // Add the digits
             for (int e = 0; e < thisDigits.size(); e++)
-                newDigits.set(e, newDigits.get(e) + thisDigits.get(e));
+                newDigits.set(newDigits.size() - 1 - e, newDigits.get(newDigits.size() - 1 - e) + thisDigits.get(thisDigits.size() - 1 - e));
         }
 
         // Carry values larger than 10
@@ -436,7 +436,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
 
             // Add the digits
             for (int e = 0; e < oDigits.size(); e++)
-                newDigits.set(e, newDigits.get(e) - oDigits.get(e));
+                newDigits.set(newDigits.size() - 1 - e, newDigits.get(newDigits.size() - 1 - e) - oDigits.get(oDigits.size() - 1 - e));
         } else {
 
             // Assign the new digits list
@@ -444,7 +444,7 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
 
             // Add the digits
             for (int e = 0; e < thisDigits.size(); e++)
-                newDigits.set(e, newDigits.get(e) - thisDigits.get(e));
+                newDigits.set(newDigits.size() - 1 - e, newDigits.get(newDigits.size() - 1 - e) - thisDigits.get(thisDigits.size() - 1 - e));
         }
 
         // Borrow for values smaller than 0
