@@ -338,6 +338,10 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
         return 0;
     }
 
+    /**
+     * @return If the other object is a {@code PreciseNumber} and is equal to this one
+     * @param obj The other object to compare to
+     */
     @Override
     public boolean equals(Object obj) {
         return obj instanceof PreciseNumber && this.compareTo((PreciseNumber) obj) == 0;
