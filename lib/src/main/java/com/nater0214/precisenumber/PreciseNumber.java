@@ -48,8 +48,6 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
                 newDigits.remove(newDigits.size() - 1);
                 exponent++;
             }
-        } else {
-            exponent = 0;
         }
 
         // Return the values
