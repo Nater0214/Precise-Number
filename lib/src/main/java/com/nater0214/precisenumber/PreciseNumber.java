@@ -205,10 +205,10 @@ public class PreciseNumber extends Number implements Comparable<PreciseNumber> {
      */
     protected List<Integer> getDigitsTrailing() {
         List<Integer> out = new ArrayList<>();
-        for (int e = exponent; e > 0; e--) {
+        out.addAll(this.getDigits());
+        for (int e = this.getExponent(); e > 0; e--) {
             out.add(0);
         }
-        out.addAll(digits);
         return out;
     }
 
