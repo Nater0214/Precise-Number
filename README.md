@@ -7,6 +7,11 @@ This is a library to provide a precise number in Java. This addresses the approx
 ## The class diagram
 ```mermaid
 classDiagram
+class Object {
+    +equals() boolean
+    +toString String
+}
+
 class Number {
     +intValue() int
     +longValue() long
@@ -23,14 +28,19 @@ class PreciseNumber {
     -int exponent
     -boolean sign
 
+    -removeTrailing(List~Integer~) List~Integer~
+    -carryDigits(List~Integer~) List~Integer~
     #getDigits() List~Integer~
     #getDigitsTrailing() List~Integer~
     #getExponent() int
-    #getLength() int
-    #getHighestExponent() int
     #getSign() boolean
+    +negate() PreciseNumber
+    +add() PreciseNumber
+    +subtract() PreciseNumber
 }
 
+PreciseNumber --|> Object
 PreciseNumber --|> Number
 PreciseNumber ..|> Comparable
+Number --|> Object
 ```
